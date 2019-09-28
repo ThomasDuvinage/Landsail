@@ -1,28 +1,32 @@
-
-
-
-
 class Landsail{
-
-    public Landsail(){
-        _x = _y = _heading = 0;     // (Float) in mm and °
-        _speed = 0;                 // (Float) in mm/s
-        _sailOpenning = 0;          // (Float) Between 90° and 0°
-        _width = _lenght;           // (Float) mm
-        _wheelAngle = 0;
-    }
-
-    //l = 44 & L = 58
-    public Landsail(float w, float l){
+    //float w = 44, float l = 58, float sailArea = 0.3, float sailborder = 58,  float mass = 1
+    public Landsail(float w, float l, float sailArea, float sailborder,  float mass){
         _x = _y = _heading = 0;     // (Float) in m and °
         _speed = 0;                 // (Float) in m/s
         _sailOpenning = 0;          // (Float) Between 90° and 0°
-        _wheelAngle = PI/6;
+        _wheelAngle = 0;
         _width = w;
         _lenght = l;
+        _sailBorder = sailborder;
+        _sailArea = sailArea;
+        _mass = mass;
+        _accel = 0;
+        _dragForce = 0;
+        _rollForce = 0.3*9.81*mass;
     }
 
     public void computeSpeed(){
+        float alpha =  _heading + _sailOpenning + Wind.direction();
+        
+        float a = cos(alpha) * (Wind.speed()/3600);
+ 
+
+        _speed += a;
+
+//           stroke(color(255, 165, 0));
+//           fill(color(255, 165, 0));
+//           drawVector(_x,_y, _speed, _heading);
+
         float radius = _lenght / cos((PI/2) - _wheelAngle);
         float beta = _speed / radius;
 
@@ -33,7 +37,8 @@ class Landsail{
 
     public void display(){
         float cx = 1,cy = 1;
-        
+        stroke(color(0,0,0));
+        fill(color(255,255,255));
         pushMatrix();
             translate(_x*cx, _y*cy);
             rotate(PI + _heading);
@@ -93,6 +98,9 @@ class Landsail{
 
     private float   _x,_y,
                     _heading, _wheelAngle,
-                    _speed,_sailOpenning, 
-                    _width, _lenght;
+                    _speed, _mass, _accel,
+                    _rollForce, _dragForce,
+                    _sailOpenning, _sailBorder,
+                    _width, _lenght,
+                    _sailArea;
 };

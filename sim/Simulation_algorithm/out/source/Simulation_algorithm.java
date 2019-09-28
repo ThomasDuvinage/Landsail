@@ -15,26 +15,40 @@ import java.io.IOException;
 public class Simulation_algorithm extends PApplet {
 
 Landsail buddy;
+WindOb Wind;
 
 public void setup(){
   
-  buddy = new Landsail(44,58);
+  buddy = new Landsail(44, 58, 0.3064f, 58, 1); 
+  Wind = new WindOb();
   buddy.setPos(new PVector(width/2,height/2,0));
-  buddy.setSpeed(2);
+  //buddy.setSpeed(2);
 }
 
 
 
 public void draw(){
-    background(102);
+    background(80);
 
-
+    Wind.draw();
     buddy.computeSpeed();
     buddy.display();
 
 }
 
+public void drawVector(float x1, float y1, float l, float alpha){
+    // draw the line
+  float x2 = x1 + l*cos(alpha + PI/2);
+  float y2 = y1 + l*sin(alpha + PI/2);
+  line(x1, y1, x2 , y2);
 
+  // draw a triangle at (x2, y2)
+  pushMatrix();
+    rotate(atan2(y2-y1, x2-x1));
+    translate(x2, y2);
+    triangle(0, 0, -10, 5, -10, -5);
+  popMatrix(); 
+}
 
 public void keyPressed(){
   switch (key) {
@@ -53,33 +67,48 @@ public void keyPressed(){
     case ' ' :
       buddy.setPos(new PVector(width/2,height/2,0));
     break;	
+    case UP :
+      
+    break;	
+    case DOWN :
+      
+    break;	
+      case LEFT :
+     
+    break;	
+    case RIGHT :
+      
+    break;	
   }
 }
-
-
-
-
 class Landsail{
-
-    public Landsail(){
+    //float w = 44, float l = 58, float sailArea = 0.3, float sailborder = 58,  float mass = 1
+    public Landsail(float w, float l, float sailArea, float sailborder,  float mass){
         _x = _y = _heading = 0;     // (Float) in m and °
         _speed = 0;                 // (Float) in m/s
-        _sailOpenning = 0;           // (Float) Between 90° and 0°
-        _width = _lenght;
+        _sailOpenning = 0;          // (Float) Between 90° and 0°
         _wheelAngle = 0;
-    }
-
-    //l = 44 & L = 58
-    public Landsail(float w, float l){
-        _x = _y = _heading = 0;     // (Float) in m and °
-        _speed = 0;                 // (Float) in m/s
-        _sailOpenning = 0;           // (Float) Between 90° and 0°
-        _wheelAngle = PI/6;
         _width = w;
         _lenght = l;
+        _sailBorder = sailborder;
+        _sailArea = sailArea;
+        _mass = mass;
+        _accel = 0;
+        _dragForce = 0;
+        _rollForce = 0.3f*9.81f*mass;
     }
 
     public void computeSpeed(){
+        float alpha =  _heading + _sailOpenning + Wind.direction();
+        float a = cos(alpha) * (Wind.speed()/3600);
+ 
+
+        _speed += a;
+
+//           stroke(color(255, 165, 0));
+//           fill(color(255, 165, 0));
+//           drawVector(_x,_y, _speed, _heading);
+
         float radius = _lenght / cos((PI/2) - _wheelAngle);
         float beta = _speed / radius;
 
@@ -90,7 +119,8 @@ class Landsail{
 
     public void display(){
         float cx = 1,cy = 1;
-        
+        stroke(color(0,0,0));
+        fill(color(255,255,255));
         pushMatrix();
             translate(_x*cx, _y*cy);
             rotate(PI + _heading);
@@ -150,8 +180,45 @@ class Landsail{
 
     private float   _x,_y,
                     _heading, _wheelAngle,
-                    _speed,_sailOpenning, 
-                    _width, _lenght;
+                    _speed, _mass, _accel,
+                    _rollForce, _dragForce,
+                    _sailOpenning, _sailBorder,
+                    _width, _lenght,
+                    _sailArea;
+};
+
+class WindOb{
+    class DIRECTION{ public static final  float     NORTH  = 0.0f,
+                                                    SOUTH = PI,
+                                                    EAST   = PI/2,
+                                                    WEST   = 3*PI/2; };
+
+    class FORCE{ public static final float          LIGHT = 50,
+                                                    STRONG = 70; };
+
+    class STABILITY{ public static final float      STABLE = 1,
+                                                    UNSTABLE = 2; };
+
+
+    public WindOb(){
+        _direction = DIRECTION.EAST;
+        _speed = 50;
+    }
+
+    public float direction(){
+        return _direction;
+    }
+
+    public float speed(){
+        return _speed;
+    }
+
+    public void draw(){
+        stroke(color(200, 200, 200));
+        drawVector(width/2, height/2, _speed*100, _direction);
+    }
+
+    private float   _direction, _speed;
 };
   public void settings() {  size(1000, 1000); }
   static public void main(String[] passedArgs) {
