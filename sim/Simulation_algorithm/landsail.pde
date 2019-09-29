@@ -26,8 +26,6 @@ class Landsail{
         if((Wind.direction() - _heading) < PI || Wind.direction() - _heading > 2*PI ) {
             _sailOpenning = -_sailOpenning;
         }
-
-
     }
 
     public void computeSpeed(){
@@ -37,10 +35,6 @@ class Landsail{
         a -= _speed*0.03;
 
         _speed += a;
-
-//           stroke(color(255, 165, 0));
-//           fill(color(255, 165, 0));
-//           drawVector(_x,_y, _speed, _heading);
 
         float radius = _lenght / cos((PI/2) - _wheelAngle);
         float beta = _speed / radius;
@@ -59,7 +53,7 @@ class Landsail{
         fill(color(255,255,255));
         pushMatrix();
             translate(_x*cx, _y*cy);
-            rotate(PI + _heading);
+            rotate(_heading);
 
             
             beginShape();

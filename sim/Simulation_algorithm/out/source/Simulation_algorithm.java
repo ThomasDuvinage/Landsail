@@ -22,31 +22,33 @@ public void setup(){
   buddy = new Landsail(44, 58, 0.3064f, 58, 1); 
   Wind = new WindOb();
   buddy.setPos(new PVector(width/2,height/2,0));
-  //buddy.setSpeed(2);
 }
 
 
 
 public void draw(){
     background(80);
+        drawVector(width/2, height/2, 50, 0, color(200, 0, 0));
+        drawVector(width/2, height/2, 50, PI/2, color(0, 200, 0));
 
     Wind.draw();
     buddy.autoPilot();
     buddy.computeSpeed();
     buddy.display();
-
 }
 
-public void drawVector(float x1, float y1, float l, float alpha){
+public void drawVector(float x1, float y1, float l, float alpha, int col){
+  fill(col);
+  stroke(col);
     // draw the line
-  float x2 = x1 + l*cos(alpha + PI/2);
-  float y2 = y1 + l*sin(alpha + PI/2);
+  float x2 = x1 + l*cos(alpha);
+  float y2 = y1 + l*sin(alpha);
   line(x1, y1, x2 , y2);
 
   // draw a triangle at (x2, y2)
   pushMatrix();
-    rotate(atan2(y2-y1, x2-x1));
     translate(x2, y2);
+    rotate(alpha);
     triangle(0, 0, -10, 5, -10, -5);
   popMatrix(); 
 }
@@ -110,8 +112,6 @@ class Landsail{
         if((Wind.direction() - _heading) < PI || Wind.direction() - _heading > 2*PI ) {
             _sailOpenning = -_sailOpenning;
         }
-
-
     }
 
     public void computeSpeed(){
@@ -121,10 +121,6 @@ class Landsail{
         a -= _speed*0.03f;
 
         _speed += a;
-
-//           stroke(color(255, 165, 0));
-//           fill(color(255, 165, 0));
-//           drawVector(_x,_y, _speed, _heading);
 
         float radius = _lenght / cos((PI/2) - _wheelAngle);
         float beta = _speed / radius;
@@ -143,7 +139,7 @@ class Landsail{
         fill(color(255,255,255));
         pushMatrix();
             translate(_x*cx, _y*cy);
-            rotate(PI + _heading);
+            rotate(_heading);
 
             
             beginShape();
@@ -239,8 +235,7 @@ class WindOb{
     }
 
     public void draw(){
-        stroke(color(200, 200, 200));
-        drawVector(width/2, height/2, _speed*10, _direction);
+        drawVector(width/2, height/2, _speed*10, _direction,color(200, 200, 200));
     }
 
     private float   _direction, _speed;
