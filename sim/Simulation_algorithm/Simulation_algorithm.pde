@@ -15,6 +15,7 @@ void draw(){
     background(80);
 
     Wind.draw();
+    buddy.autoPilot();
     buddy.computeSpeed();
     buddy.display();
 

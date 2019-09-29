@@ -27,7 +27,7 @@ class WindOb{
 
     public void draw(){
         stroke(color(200, 200, 200));
-        drawVector(width/2, height/2, _speed*100, _direction);
+        drawVector(width/2, height/2, _speed*10, _direction);
     }
 
     private float   _direction, _speed;

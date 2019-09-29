@@ -3,7 +3,7 @@ class Landsail{
     public Landsail(float w, float l, float sailArea, float sailborder,  float mass){
         _x = _y = _heading = 0;     // (Float) in m and °
         _speed = 0;                 // (Float) in m/s
-        _sailOpenning = 0;          // (Float) Between 90° and 0°
+        _sailOpenning = PI/6;          // (Float) Between 90° and 0°
         _wheelAngle = 0;
         _width = w;
         _lenght = l;
@@ -15,11 +15,26 @@ class Landsail{
         _rollForce = 0.3*9.81*mass;
     }
 
+
+    public void autoPilot(){
+        autoSail();
+
+    }
+
+    public void autoSail(){
+        println(Wind.direction() - _heading);
+        if((Wind.direction() - _heading) < PI || Wind.direction() - _heading > 2*PI ) {
+            _sailOpenning = -_sailOpenning;
+        }
+
+
+    }
+
     public void computeSpeed(){
-        float alpha =  _heading + _sailOpenning + Wind.direction();
+        float alpha =  _heading - _sailOpenning + Wind.direction();
         
         float a = cos(alpha) * (Wind.speed()/3600);
- 
+        a -= _speed*0.03;
 
         _speed += a;
 
@@ -31,8 +46,11 @@ class Landsail{
         float beta = _speed / radius;
 
         _heading += beta;
+        if(_heading > 2*PI) _heading -= 2*PI;
+        if(_heading < 0) _heading += 2*PI;
         _x += _speed * sin(_heading);
         _y += _speed * -cos(_heading);
+
     }
 
     public void display(){
@@ -53,6 +71,9 @@ class Landsail{
 
             rotate(_wheelAngle);
             line(0,0,0,_lenght/8);
+            rotate(-_wheelAngle);
+            rotate(_sailOpenning);
+            line(0,0,0,-_lenght);
 
         popMatrix();
     }
@@ -61,6 +82,8 @@ class Landsail{
         _x = pos.x;
         _y = pos.y;
         _heading = pos.z;
+        if(_heading > 2*PI) _heading -= 2*PI;
+        if(_heading < 0) _heading += 2*PI;
     }
 
     public PVector getPos(){
@@ -76,13 +99,13 @@ class Landsail{
     }
 
     public void steerLeft(){
-        _wheelAngle += PI/24;
-        if(_wheelAngle > PI/4) _wheelAngle = PI/4;
+        _wheelAngle -= PI/24;
+        if(_wheelAngle < -PI/4) _wheelAngle = -PI/4;
     }
 
     public void steerRight(){
-        _wheelAngle -= PI/24;
-        if(_wheelAngle < -PI/4) _wheelAngle = -PI/4;
+        _wheelAngle += PI/24;
+        if(_wheelAngle > PI/4) _wheelAngle = PI/4;
     }
 
     public void accelerate(){
