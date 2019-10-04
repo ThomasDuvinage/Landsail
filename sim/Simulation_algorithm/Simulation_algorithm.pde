@@ -16,7 +16,7 @@ void draw(){
   background(50,120,200);
       drawVector(0, 0, 50, 0, color(200, 0, 0));
       drawVector(0, 0, 50, PI/2, color(0, 200, 0));
-
+  buddy.debug();
   buddy.autoPilot();
   buddy.computeSpeed();
   buddy.display();

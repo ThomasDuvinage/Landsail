@@ -10,6 +10,8 @@ class Landsail{
         _heading = PI;
         _speed = 0;                 // (Float) in m/s
         _sailOpenning = PI/6;       // (Float) Between 90° and 0°
+        _sailMomentum = 0;
+        _sailAngularSpeed = 0;
         _wheelAngle = 0;
         _width = w;
         _lenght = l;
@@ -26,29 +28,46 @@ class Landsail{
 
     }
 
+    public void debug(){
+        pushMatrix();
+            translate(-width/2, -height/2);
+            fill(200);
+            rect(0,25,300,300);
+            fill(0);
+            strokeWeight(0.5);
+            textSize(15);
+            
+            text("_heading :", 10, 50);         text(_heading*radToDeg, 200,50);
+            text("_speed :", 10,100);           text(_speed, 200,100);
+            text("_sailOpenning :", 10,150);    text(_sailOpenning*radToDeg, 200,150);
+            text("_sailAngularSpeed :", 10,200);text(_sailAngularSpeed*radToDeg, 200,200);
+            text("_sailMomentum :", 10,250);    text(_sailMomentum*radToDeg, 200,250);
+        popMatrix();
+    }
 
     public void computeSpeed(){
-        _heading %= PII;
+       _heading = (_heading + PII) % PII;
 
         float lambda = _heading + _sailOpenning - Wind.direction();
-        _sailMomentum = Wind.speed() * cos(lambda);
+        _sailMomentum = (Wind.speed()/3600) * _sailBorder * cos(lambda);
 
         _sailAngularSpeed += _sailMomentum * 0.003;
 
-        if(_sailOpenning + _sailAngularSpeed > sailLimit){
+        if(_sailOpenning + _sailAngularSpeed >= sailLimit){
             _sailAngularSpeed = 0;
-        }else if(_sailOpenning + _sailAngularSpeed < -sailLimit){
+        }else if(_sailOpenning + _sailAngularSpeed <= -sailLimit){
             _sailAngularSpeed = 0;
         }
 
         _sailOpenning += _sailAngularSpeed;
+        _sailOpenning%=PII;
 
         _sailAngularSpeed -= 0.08*_sailAngularSpeed;
 
-
-        float alpha =  _heading + (_sailOpenning) + Wind.direction();
         
-        float a = cos(alpha) * (Wind.speed()/3600);
+        float alpha =  _heading + _sailOpenning + Wind.direction();
+        
+        float a = cos((Wind.direction() - (_heading + _sailOpenning)+PII)%PII) * (Wind.speed()/3600);
         a -= _speed*0.008;
 
         _speed += a;
@@ -60,7 +79,7 @@ class Landsail{
     
         _x += _speed * -sin(_heading);
         _y += _speed * cos(_heading);
-
+        
     }
 
     public void display(){
@@ -138,5 +157,5 @@ class Landsail{
                     _width, _lenght,
                     _sailArea;
 
-    final float sailLimit = 30 * degToRad;
+    final float sailLimit = 45 * degToRad;
 };
