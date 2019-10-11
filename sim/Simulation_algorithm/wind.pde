@@ -14,7 +14,7 @@ class WindOb{
 
     public WindOb(){
         _direction = DIRECTION.EAST;
-        _speed = 50;
+        _speed = 0;
     }
 
     public void setDirection(float dir){

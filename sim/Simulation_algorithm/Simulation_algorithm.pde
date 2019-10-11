@@ -6,6 +6,7 @@ void setup(){
   buddy = new Landsail(44, 58, 0.3064, 58, 1); 
   Wind = new WindOb();
   //buddy.setPos(new PVector(width/2,height/2,0));
+
 }
 
 
@@ -37,6 +38,11 @@ void drawVector(float x1, float y1, float l, float alpha, color col){
     triangle(0, 0, -10, 5, -10, -5);
   popMatrix(); 
 }
+
+void mousePressed() {
+  buddy.goTo(mouseX - width/2, mouseY - height/2);
+}
+
 
 void keyPressed(){
   switch (keyCode) {
