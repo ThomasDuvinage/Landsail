@@ -20,7 +20,7 @@ class Landsail{
         _accel = 0;
         _dragForce = 0;
         _rollForce = 0.3*9.81*mass;
-        _goal = new PVector(0,0);
+        _goal = new PVector(150,-200);
     }
 
 
@@ -35,11 +35,11 @@ class Landsail{
 
         _heading = (_heading + PII) % PII;
         goalAngle = (goalAngle + PII) % PII;
-
-        println((_heading - goalAngle)*radToDeg);
-
     
-        float incAngle = cos(_heading + goalAngle);
+        _wheelAngle%=PII;
+        float incAngle = (goalAngle - _heading - PI/2) - _wheelAngle;
+
+        println(incAngle * radToDeg);
 
         if(incAngle + _wheelAngle > wheelLimit){
             incAngle = 0;

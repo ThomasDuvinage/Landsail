@@ -39,8 +39,9 @@ void drawVector(float x1, float y1, float l, float alpha, color col){
   popMatrix(); 
 }
 
-void mousePressed() {
-  buddy.goTo(mouseX - width/2, mouseY - height/2);
+
+void mousePressed(){
+    buddy.goTo(mouseX - width/2, mouseY - height/2);
 }
 
 
