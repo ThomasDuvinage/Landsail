@@ -39,7 +39,7 @@ class Landsail{
         _wheelAngle%=PII;
         float incAngle = (goalAngle - _heading - PI/2) - _wheelAngle;
 
-        println(incAngle * radToDeg);
+        //println(incAngle * radToDeg);
 
         if(incAngle + _wheelAngle > wheelLimit){
             incAngle = 0;
